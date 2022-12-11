@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
+  "name": "post-mackerel-metrics",
   "version": "0.0.0",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "This is a simple action that posts service metrics to Mackerel (https://mackerel.io/).",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -15,14 +15,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "https://github.com/stefafafan/post-mackerel-metrics"
   },
   "keywords": [
     "actions",
-    "node",
-    "setup"
+    "mackerel"
   ],
-  "author": "",
+  "author": "stefafafan",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.10.0"
