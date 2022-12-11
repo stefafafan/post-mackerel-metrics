@@ -60,11 +60,14 @@ function constructServiceMetricEndpoint(serviceName) {
 }
 exports.constructServiceMetricEndpoint = constructServiceMetricEndpoint;
 function constructServiceMetricData(metricName, metricValue, metricTime) {
-    return JSON.stringify(`[{
-    name: ${metricName},
-    value: ${metricValue},
-    time: ${metricTime},
-}]`);
+    const serviceMetricData = [
+        {
+            name: metricName,
+            value: metricValue,
+            time: metricTime
+        }
+    ];
+    return JSON.stringify(serviceMetricData);
 }
 exports.constructServiceMetricData = constructServiceMetricData;
 function postServiceMetric(apiKey, serviceName, metricName, metricValue, metricTime) {
@@ -77,7 +80,7 @@ function postServiceMetric(apiKey, serviceName, metricName, metricValue, metricT
         const result = yield client.post(endpoint, postData);
         if (result.message.statusCode !== 200) {
             const response = yield result.readBody();
-            throw new Error(`StatusCode: ${result.message.statusCode}, Message: ${JSON.parse(response)}`);
+            throw new Error(`StatusCode: ${result.message.statusCode}, Message: ${response}`);
         }
         return result;
     });

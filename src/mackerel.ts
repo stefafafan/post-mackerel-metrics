@@ -26,11 +26,14 @@ export function constructServiceMetricData(
   metricValue: number,
   metricTime: number
 ): string {
-  return JSON.stringify(`[{
-    name: ${metricName},
-    value: ${metricValue},
-    time: ${metricTime},
-}]`)
+  const serviceMetricData = [
+    {
+      name: metricName,
+      value: metricValue,
+      time: metricTime
+    }
+  ]
+  return JSON.stringify(serviceMetricData)
 }
 
 export async function postServiceMetric(
@@ -55,9 +58,7 @@ export async function postServiceMetric(
   if (result.message.statusCode !== 200) {
     const response = await result.readBody()
     throw new Error(
-      `StatusCode: ${result.message.statusCode}, Message: ${JSON.parse(
-        response
-      )}`
+      `StatusCode: ${result.message.statusCode}, Message: ${response}`
     )
   }
   return result
