@@ -22,7 +22,7 @@ Build and format.
 $ npm run build && npm run format && npm run lint
 ```
 
-Run the tests. Theses should pass.
+Run the tests. These should pass.
 
 ```bash
 $ npm test
