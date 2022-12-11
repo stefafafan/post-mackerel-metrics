@@ -51,3 +51,7 @@ Run the tests :heavy_check_mark:
 ```bash
 $ npm test
 ```
+
+## Author
+
+stefafafan ([GitHub](https://github.com/stefafafan), [Twitter](https://twitter.com/stefafafan))
