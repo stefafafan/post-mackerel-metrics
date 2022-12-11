@@ -29,10 +29,11 @@ test('constructServiceMetricData', () => {
   const metricValue = 12345.678
   const metricTime = 1670747231
 
-  expect(constructServiceMetricData(metricName, metricValue, metricTime))
-    .toBe(`[{
+  expect(constructServiceMetricData(metricName, metricValue, metricTime)).toBe(
+    JSON.stringify(`[{
     name: metric-a,
     value: 12345.678,
     time: 1670747231,
 }]`)
+  )
 })

@@ -26,11 +26,11 @@ export function constructServiceMetricData(
   metricValue: number,
   metricTime: number
 ): string {
-  return `[{
+  return JSON.stringify(`[{
     name: ${metricName},
     value: ${metricValue},
     time: ${metricTime},
-}]`
+}]`)
 }
 
 export async function postServiceMetric(
