@@ -16,6 +16,6 @@ jobs:
         uses: stefafafan/post-mackerel-metrics@v1
         with:
           api-key: ${{ secrets.MACKEREL_APIKEY }}
-          service-name: ${{ secrets.MACKERL_SERVICENAME }}
+          service-name: ${{ secrets.MACKEREL_SERVICENAME }}
           metric-name: 'lines.typescript'
           metric-value: ${{steps.count-lines.outputs.lines }}
