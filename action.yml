@@ -1,11 +1,22 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Post service metrics to Mackerel'
+description: 'This is a simple action that posts service metrics to Mackerel (https://mackerel.io/).'
+author: 'stefafafan'
 inputs:
-  milliseconds: # change this
+  api-key:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'API Key value of Mackerel. Should be stored in GitHub Secrets.'
+  service-name:
+    required: true
+    description: 'The Mackerel service name you want to post metrics to.'
+  metric-name:
+    required: true
+    description: 'The Mackerel metric name you want to post.'
+  metric-value:
+    required: true
+    description: 'The Mackerel metric value you want to post.'
+  metric-time:
+    required: false
+    description: 'The time you want to post the metric. When not specified, the current time will be used.'
 runs:
   using: 'node16'
   main: 'dist/index.js'
