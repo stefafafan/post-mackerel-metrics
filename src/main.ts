@@ -1,16 +1,31 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import {postServiceMetric} from './mackerel'
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+    const apiKey: string = core.getInput('api-key', {required: true})
+    const serviceName: string = core.getInput('service-name', {required: true})
+    const metricName: string = core.getInput('metric-name', {required: true})
+    const metricValue: string = core.getInput('metric-value', {required: true})
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    // TODO: support metric-time input
+    const currentTime = Date.now() / 1000
+    // const metricTime: string = core.getInput('metric-time')
 
-    core.setOutput('time', new Date().toTimeString())
+    core.debug(
+      `ServiceName: ${serviceName}, MetricName: ${metricName}, MetricValue: ${metricValue}, MetricTime: ${currentTime}`
+    )
+
+    // Post values to Mackerel service metrics.
+    await postServiceMetric(
+      apiKey,
+      serviceName,
+      metricName,
+      parseInt(metricValue, 10),
+      currentTime
+    )
+
+    core.setOutput('time', currentTime)
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }

@@ -14,12 +14,12 @@ inputs:
   metric-value:
     required: true
     description: 'The Mackerel metric value you want to post.'
-  metric-time:
-    required: false
-    description: 'The time you want to post the metric. When not specified, the current time will be used.'
+  # metric-time:
+  #   required: false
+  #   description: 'The time you want to post the metric. When not specified, the current time will be used.'
 outputs:
-  status:
-    description: 'The status code of the POST request.'
+  time:
+    description: 'The time used to post the metric (epoch seconds).'
 runs:
   using: 'node16'
   main: 'dist/index.js'
