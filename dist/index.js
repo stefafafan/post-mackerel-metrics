@@ -39,31 +39,42 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.postServiceMetric = void 0;
+exports.postServiceMetric = exports.constructServiceMetricData = exports.constructServiceMetricEndpoint = exports.prepareHttpClient = void 0;
 const http = __importStar(__nccwpck_require__(255));
-const API_BASE_URL = 'https://api.mackerelio.com/';
+const core = __importStar(__nccwpck_require__(186));
+const API_BASE_URL = 'https://api.mackerelio.com';
+function prepareHttpClient(apiKey) {
+    const client = new http.HttpClient('stefafafan/post-mackerel-metrics (https://github.com/stefafafan/post-mackerel-metrics)');
+    client.requestOptions = {
+        headers: {
+            'X-Api-Key': apiKey,
+            'Content-Type': 'application/json'
+        }
+    };
+    return client;
+}
+exports.prepareHttpClient = prepareHttpClient;
+// https://mackerel.io/api-docs/entry/service-metrics#post
+function constructServiceMetricEndpoint(serviceName) {
+    return `${API_BASE_URL}/api/v0/services/${serviceName}/tsdb`;
+}
+exports.constructServiceMetricEndpoint = constructServiceMetricEndpoint;
+function constructServiceMetricData(metricName, metricValue, metricTime) {
+    return `[{
+    name: ${metricName},
+    value: ${metricValue},
+    time: ${metricTime},
+}]`;
+}
+exports.constructServiceMetricData = constructServiceMetricData;
 function postServiceMetric(apiKey, serviceName, metricName, metricValue, metricTime) {
     return __awaiter(this, void 0, void 0, function* () {
-        // Setup http client.
-        const client = new http.HttpClient('stefafafan/post-mackerel-metrics (https://github.com/stefafafan/post-mackerel-metrics)');
-        client.requestOptions = {
-            headers: {
-                'X-Api-Key': apiKey,
-                'Content-Type': 'application/json'
-            }
-        };
-        // https://mackerel.io/api-docs/entry/service-metrics#post
-        const endpoint = `${API_BASE_URL}/api/v0/services/${serviceName}/tsdb`;
-        // Post to Mackerel API.
-        const postData = `[
-    {
-        name: ${metricName},
-        value: ${metricValue},
-        time: ${metricTime},
-    }
-  ]`;
+        const client = prepareHttpClient(apiKey);
+        const endpoint = constructServiceMetricEndpoint(serviceName);
+        const postData = constructServiceMetricData(metricName, metricValue, metricTime);
+        core.debug(`Endpoint: ${endpoint}`);
+        core.debug(`PostData: ${postData}`);
         const result = yield client.post(endpoint, postData);
-        // Throw error if not success.
         if (result.message.statusCode !== 200) {
             throw new Error(`StatusCode: ${result.message.statusCode}, Message: ${result.readBody()}`);
         }
@@ -123,8 +134,7 @@ function run() {
             const metricName = core.getInput('metric-name', { required: true });
             const metricValue = core.getInput('metric-value', { required: true });
             // TODO: support metric-time input
-            const currentTime = Date.now() / 1000;
-            // const metricTime: string = core.getInput('metric-time')
+            const currentTime = Math.floor(Date.now() / 1000);
             core.debug(`ServiceName: ${serviceName}, MetricName: ${metricName}, MetricValue: ${metricValue}, MetricTime: ${currentTime}`);
             // Post values to Mackerel service metrics.
             yield (0, mackerel_1.postServiceMetric)(apiKey, serviceName, metricName, parseInt(metricValue, 10), currentTime);
