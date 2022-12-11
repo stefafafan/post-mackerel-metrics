@@ -17,6 +17,9 @@ inputs:
   metric-time:
     required: false
     description: 'The time you want to post the metric. When not specified, the current time will be used.'
+outputs:
+  status:
+    description: 'The status code of the POST request.'
 runs:
   using: 'node16'
   main: 'dist/index.js'
