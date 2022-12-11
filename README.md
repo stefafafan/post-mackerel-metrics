@@ -25,10 +25,12 @@ Note: Currently this action does not support posting multiple service metrics at
 uses: stefafafan/post-mackerel-metrics@v1
 with:
   api-key: ${{ secrets.MACKEREL_APIKEY }}
-  service-name: ${{ secrets.MACKERL_SERVICENAME }}
+  service-name: ${{ secrets.MACKEREL_SERVICENAME }}
   metric-name: 'my-favorite-metric.count' # [a-zA-Z0-9._-]+
   metric-value: 12345.678 # Should be a numeric value
 ```
+
+Checkout a [working example workflow](https://github.com/stefafafan/post-mackerel-metrics/blob/main/.github/workflows/lines-of-code-example-workflow.yml).
 
 ## Development
 
