@@ -2,20 +2,50 @@
 
 # post-mackerel-metrics
 
-WIP: post-mackerel-metrics is a simple GitHub Action for posting Service Metrics to [Mackerel](https://mackerel.io/).
+post-mackerel-metrics is a simple GitHub Action for posting Service Metrics to [Mackerel](https://mackerel.io/).
 
-# Development
-Install the dependencies  
+This Action is inspired by https://github.com/yutailang0119/action-mackerel-api, but this action focuses only on posting a service metric as defined in https://mackerel.io/api-docs/entry/service-metrics#post.
+
+Note: Currently this action does not support posting multiple service metrics at once.
+
+## Inputs
+
+- `api-key`: API Key value of Mackerel. Should be stored in GitHub Secrets.
+- `service-name`: The Mackerel service name you want to post metrics to.
+- `metric-name`: The Mackerel metric name you want to post. Accepted values are `[a-zA-Z0-9._-]+` .
+- `metric-value`: The Mackerel metric value you want to post. Should be a numeric value.
+
+## Outputs
+
+- `time`: The time used to post the metric (epoch seconds).
+
+## Example Usage
+
+```yaml
+uses: stefafafan/post-mackerel-metrics@v1
+with:
+  api-key: ${{ secrets.MACKEREL_APIKEY }}
+  service-name: ${{ secrets.MACKERL_SERVICENAME }}
+  metric-name: 'my-favorite-metric.count' # [a-zA-Z0-9._-]+
+  metric-value: 12345.678 # Should be a numeric value
+```
+
+## Development
+
+Install the dependencies
+
 ```bash
 $ npm install
 ```
 
 Build the typescript and package it for distribution
+
 ```bash
 $ npm run build && npm run package
 ```
 
-Run the tests :heavy_check_mark:  
+Run the tests :heavy_check_mark:
+
 ```bash
 $ npm test
 ```

@@ -1,6 +1,95 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 134:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.postServiceMetric = exports.constructServiceMetricData = exports.constructServiceMetricEndpoint = exports.prepareHttpClient = void 0;
+const http = __importStar(__nccwpck_require__(255));
+const core = __importStar(__nccwpck_require__(186));
+const API_BASE_URL = 'https://api.mackerelio.com';
+function prepareHttpClient(apiKey) {
+    const client = new http.HttpClient('stefafafan/post-mackerel-metrics (https://github.com/stefafafan/post-mackerel-metrics)');
+    client.requestOptions = {
+        headers: {
+            'X-Api-Key': apiKey,
+            'Content-Type': 'application/json'
+        }
+    };
+    return client;
+}
+exports.prepareHttpClient = prepareHttpClient;
+// https://mackerel.io/api-docs/entry/service-metrics#post
+function constructServiceMetricEndpoint(serviceName) {
+    return `${API_BASE_URL}/api/v0/services/${serviceName}/tsdb`;
+}
+exports.constructServiceMetricEndpoint = constructServiceMetricEndpoint;
+function constructServiceMetricData(metricName, metricValue, metricTime) {
+    const serviceMetricData = [
+        {
+            name: metricName,
+            value: metricValue,
+            time: metricTime
+        }
+    ];
+    return JSON.stringify(serviceMetricData);
+}
+exports.constructServiceMetricData = constructServiceMetricData;
+function postServiceMetric(apiKey, serviceName, metricName, metricValue, metricTime) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const client = prepareHttpClient(apiKey);
+        const endpoint = constructServiceMetricEndpoint(serviceName);
+        const postData = constructServiceMetricData(metricName, metricValue, metricTime);
+        core.debug(`Endpoint: ${endpoint}`);
+        core.debug(`PostData: ${postData}`);
+        const result = yield client.post(endpoint, postData);
+        if (result.message.statusCode !== 200) {
+            const response = yield result.readBody();
+            throw new Error(`StatusCode: ${result.message.statusCode}, Message: ${response}`);
+        }
+        return result;
+    });
+}
+exports.postServiceMetric = postServiceMetric;
+
+
+/***/ }),
+
 /***/ 109:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -40,16 +129,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
-const wait_1 = __nccwpck_require__(817);
+const mackerel_1 = __nccwpck_require__(134);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const ms = core.getInput('milliseconds');
-            core.debug(`Waiting ${ms} milliseconds ...`); // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
-            core.debug(new Date().toTimeString());
-            yield (0, wait_1.wait)(parseInt(ms, 10));
-            core.debug(new Date().toTimeString());
-            core.setOutput('time', new Date().toTimeString());
+            const apiKey = core.getInput('api-key', { required: true });
+            const serviceName = core.getInput('service-name', { required: true });
+            const metricName = core.getInput('metric-name', { required: true });
+            const metricValue = core.getInput('metric-value', { required: true });
+            const currentTime = Math.floor(Date.now() / 1000);
+            core.debug(`ServiceName: ${serviceName}, MetricName: ${metricName}, MetricValue: ${metricValue}, MetricTime: ${currentTime}`);
+            // Post values to Mackerel service metrics.
+            yield (0, mackerel_1.postServiceMetric)(apiKey, serviceName, metricName, parseInt(metricValue, 10), currentTime);
+            core.setOutput('time', currentTime);
         }
         catch (error) {
             if (error instanceof Error)
@@ -58,37 +150,6 @@ function run() {
     });
 }
 run();
-
-
-/***/ }),
-
-/***/ 817:
-/***/ (function(__unused_webpack_module, exports) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.wait = void 0;
-function wait(milliseconds) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise(resolve => {
-            if (isNaN(milliseconds)) {
-                throw new Error('milliseconds not a number');
-            }
-            setTimeout(() => resolve('done!'), milliseconds);
-        });
-    });
-}
-exports.wait = wait;
 
 
 /***/ }),

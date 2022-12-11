@@ -10,13 +10,13 @@ inputs:
     description: 'The Mackerel service name you want to post metrics to.'
   metric-name:
     required: true
-    description: 'The Mackerel metric name you want to post.'
+    description: 'The Mackerel metric name you want to post. Accepted values are [a-zA-Z0-9._-]+ .'
   metric-value:
     required: true
-    description: 'The Mackerel metric value you want to post.'
-  metric-time:
-    required: false
-    description: 'The time you want to post the metric. When not specified, the current time will be used.'
+    description: 'The Mackerel metric value you want to post. Should be a numeric value.'
+outputs:
+  time:
+    description: 'The time used to post the metric (epoch seconds).'
 runs:
   using: 'node16'
   main: 'dist/index.js'

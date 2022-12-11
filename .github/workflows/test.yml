@@ -19,6 +19,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - id: post-to-mackerel
+        uses: ./
+        with:
+          api-key: ${{ secrets.MACKEREL_APIKEY }}
+          service-name: ${{ secrets.MACKEREL_SERVICENAME }}
+          metric-name: 'post-mackerel-metrics.execution_test'
+          metric-value: 123456.789
+      - run: echo ${{ steps.post-to-mackerel.outputs.time }}
+  test-failure: # try out failure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - uses: ./
         with:
-          milliseconds: 1000
+          api-key: 'non-existent-api-key'
+          service-name: ${{ secrets.MACKEREL_SERVICENAME }}
+          metric-name: 'post-mackerel-metrics.execution_test'
+          metric-value: 123456.789
+        continue-on-error: true
