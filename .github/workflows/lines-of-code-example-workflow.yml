@@ -1,0 +1,24 @@
+name: Count and Post lines of Code to Mackerel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  count-and-post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - id: count-lines
+        name: count lines of TypeScript code
+        run: |
+          lines=$(find src/ -name '*.ts' -print0 | xargs -0 cat | wc -l | tr -d ' ')
+          echo "lines=${lines}" >> $GITHUB_OUTPUT
+      - name: Post to Mackerel
+        uses: stefafafan/post-mackerel-metrics@v1
+        with:
+          api-key: ${{ secrets.MACKEREL_APIKEY }}
+          service-name: ${{ secrets.MACKEREL_SERVICENAME }}
+          metric-name: 'lines.typescript'
+          metric-value: ${{steps.count-lines.outputs.lines }}
