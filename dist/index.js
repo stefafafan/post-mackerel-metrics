@@ -137,7 +137,6 @@ function run() {
             const serviceName = core.getInput('service-name', { required: true });
             const metricName = core.getInput('metric-name', { required: true });
             const metricValue = core.getInput('metric-value', { required: true });
-            // TODO: support metric-time input
             const currentTime = Math.floor(Date.now() / 1000);
             core.debug(`ServiceName: ${serviceName}, MetricName: ${metricName}, MetricValue: ${metricValue}, MetricTime: ${currentTime}`);
             // Post values to Mackerel service metrics.
