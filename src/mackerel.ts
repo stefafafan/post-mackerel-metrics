@@ -53,8 +53,9 @@ export async function postServiceMetric(
 
   const result = await client.post(endpoint, postData)
   if (result.message.statusCode !== 200) {
+    const response = await result.readBody()
     throw new Error(
-      `StatusCode: ${result.message.statusCode}, Message: ${result.readBody()}`
+      `StatusCode: ${result.message.statusCode}, Message: ${response}`
     )
   }
   return result
