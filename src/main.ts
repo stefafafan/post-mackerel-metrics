@@ -7,8 +7,6 @@ async function run(): Promise<void> {
     const serviceName: string = core.getInput('service-name', {required: true})
     const metricName: string = core.getInput('metric-name', {required: true})
     const metricValue: string = core.getInput('metric-value', {required: true})
-
-    // TODO: support metric-time input
     const currentTime = Math.floor(Date.now() / 1000)
 
     core.debug(
