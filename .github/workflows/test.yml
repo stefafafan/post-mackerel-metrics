@@ -25,3 +25,14 @@ jobs:
           service-name: ${{ secrets.MACKEREL_SERVICENAME }}
           metric-name: 'post-mackerel-metrics.execution_test'
           metric-value: 123456.789
+  test-failure: # try out failure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          api-key: 'non-existent-api-key'
+          service-name: ${{ secrets.MACKEREL_SERVICENAME }}
+          metric-name: 'post-mackerel-metrics.execution_test'
+          metric-value: 123456.789
+      - continue-on-error: true
