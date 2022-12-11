@@ -4,7 +4,7 @@
 
 post-mackerel-metrics is a simple GitHub Action for posting Service Metrics to [Mackerel](https://mackerel.io/).
 
-This Action is inspired by https://github.com/yutailang0119/action-mackerel-api, but this action focuses only on posting a service metric as defined in https://mackerel.io/api-docs/entry/service-metrics#post.
+This action is inspired by the [yutailang0119/action-mackerel-api](https://github.com/yutailang0119/action-mackerel-api) action, but focuses only on posting service metrics as defined in https://mackerel.io/api-docs/entry/service-metrics#post.
 
 Note: Currently this action does not support posting multiple service metrics at once.
 
@@ -32,22 +32,10 @@ with:
 
 Checkout a [working example workflow](https://github.com/stefafafan/post-mackerel-metrics/blob/main/.github/workflows/lines-of-code-example-workflow.yml).
 
-## Development
+## Contributing
 
-Install the dependencies
+See the [Contribution Guide](https://github.com/stefafafan/post-mackerel-metrics/blob/main/CONTRIBUTING.md).
 
-```bash
-$ npm install
-```
+## Author
 
-Build the typescript and package it for distribution
-
-```bash
-$ npm run build && npm run package
-```
-
-Run the tests :heavy_check_mark:
-
-```bash
-$ npm test
-```
+stefafafan ([GitHub](https://github.com/stefafafan), [Twitter](https://twitter.com/stefafafan))
