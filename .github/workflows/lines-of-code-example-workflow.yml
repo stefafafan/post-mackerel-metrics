@@ -1,6 +1,9 @@
 name: Count and Post lines of Code to Mackerel
 
-on: push
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   count-and-post:
