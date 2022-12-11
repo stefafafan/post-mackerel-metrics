@@ -32,25 +32,9 @@ with:
 
 Checkout a [working example workflow](https://github.com/stefafafan/post-mackerel-metrics/blob/main/.github/workflows/lines-of-code-example-workflow.yml).
 
-## Development
+## Contributing
 
-Install the dependencies
-
-```bash
-$ npm install
-```
-
-Build the typescript and package it for distribution
-
-```bash
-$ npm run build && npm run package
-```
-
-Run the tests :heavy_check_mark:
-
-```bash
-$ npm test
-```
+See the [Contribution Guide](https://github.com/stefafafan/post-mackerel-metrics/blob/main/CONTRIBUTING.md).
 
 ## Author
 
