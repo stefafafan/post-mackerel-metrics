@@ -9,8 +9,7 @@ async function run(): Promise<void> {
     const metricValue: string = core.getInput('metric-value', {required: true})
 
     // TODO: support metric-time input
-    const currentTime = Date.now() / 1000
-    // const metricTime: string = core.getInput('metric-time')
+    const currentTime = Math.floor(Date.now() / 1000)
 
     core.debug(
       `ServiceName: ${serviceName}, MetricName: ${metricName}, MetricValue: ${metricValue}, MetricTime: ${currentTime}`
