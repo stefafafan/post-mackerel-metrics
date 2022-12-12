@@ -8,11 +8,13 @@ This action is inspired by the [yutailang0119/action-mackerel-api](https://githu
 
 ## Inputs
 
-- `api-key`: API Key value of Mackerel. Should be stored in GitHub Secrets.
-- `service-name`: The Mackerel service name you want to post metrics to.
+- `api-key` (required): API Key value of Mackerel. Should be stored in GitHub Secrets.
+- `service-name` (required): The Mackerel service name you want to post metrics to.
 - `metric-name`: The Mackerel metric name you want to post. Accepted values are `[a-zA-Z0-9._-]+` .
 - `metric-value`: The Mackerel metric value you want to post. Should be a numeric value.
 - `metrics`: A multiline input, used to specify multiple metrics at once. Formatted as `name value timestamp`. `timestamp` can be omitted, in which case the current time will be used.
+
+Either the `metric-name` and `metric-value` pair or `metrics` is required. See the example usages below for details.
 
 ## Outputs
 
