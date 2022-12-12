@@ -40,3 +40,21 @@ jobs:
             post-mackerel-metrics.multiple.test1 1111
             post-mackerel-metrics.multiple.test2 2222
       - run: echo ${{ steps.post-to-mackerel.outputs.time }}
+  test-input-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: set only metric-name
+        uses: ./
+        with:
+          api-key: ${{ secrets.MACKEREL_APIKEY }}
+          service-name: ${{ secrets.MACKEREL_SERVICENAME }}
+          metric-name: 'foo.bar'
+        continue-on-error: true
+      - name: set only metric-value
+        uses: ./
+        with:
+          api-key: ${{ secrets.MACKEREL_APIKEY }}
+          service-name: ${{ secrets.MACKEREL_SERVICENAME }}
+          metric-value: 1234
+        continue-on-error: true
