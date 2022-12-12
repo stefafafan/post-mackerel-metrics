@@ -39,7 +39,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.postServiceMetric = exports.constructServiceMetricData = exports.constructServiceMetricEndpoint = exports.prepareHttpClient = void 0;
+exports.postMultipleServiceMetrics = exports.postServiceMetric = exports.constructServiceMetricDataMultiple = exports.constructServiceMetricData = exports.constructServiceMetricEndpoint = exports.prepareHttpClient = void 0;
 const http = __importStar(__nccwpck_require__(255));
 const core = __importStar(__nccwpck_require__(186));
 const API_BASE_URL = 'https://api.mackerelio.com';
@@ -70,6 +70,38 @@ function constructServiceMetricData(metricName, metricValue, metricTime) {
     return JSON.stringify(serviceMetricData);
 }
 exports.constructServiceMetricData = constructServiceMetricData;
+// https://mackerel.io/api-docs/entry/service-metrics#post
+// use this for constructing the request body for multiple service metrics
+function constructServiceMetricDataMultiple(metrics, metricTime) {
+    const serviceMetricData = [];
+    for (const metric of metrics) {
+        // split each metric by space character.
+        // the metric will be defined as 'name value timestamp'
+        // e.g. foo-bar.metric 1234 1670741111
+        const splitted = metric.split(/\s+/);
+        // if string contains three values, use each of them as the metric.
+        // else if string only contains two values, treat it as name,value and use current time as metric time.
+        if (splitted.length === 3) {
+            serviceMetricData.push({
+                name: splitted.at(0),
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                value: parseInt(splitted.at(1)),
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                time: parseInt(splitted.at(2))
+            });
+        }
+        else if (splitted.length === 2) {
+            serviceMetricData.push({
+                name: splitted.at(0),
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                value: parseInt(splitted.at(1)),
+                time: metricTime
+            });
+        }
+    }
+    return JSON.stringify(serviceMetricData);
+}
+exports.constructServiceMetricDataMultiple = constructServiceMetricDataMultiple;
 function postServiceMetric(apiKey, serviceName, metricName, metricValue, metricTime) {
     return __awaiter(this, void 0, void 0, function* () {
         const client = prepareHttpClient(apiKey);
@@ -86,6 +118,22 @@ function postServiceMetric(apiKey, serviceName, metricName, metricValue, metricT
     });
 }
 exports.postServiceMetric = postServiceMetric;
+function postMultipleServiceMetrics(apiKey, serviceName, metrics, metricTime) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const client = prepareHttpClient(apiKey);
+        const endpoint = constructServiceMetricEndpoint(serviceName);
+        const postData = constructServiceMetricDataMultiple(metrics, metricTime);
+        core.debug(`Endpoint: ${endpoint}`);
+        core.debug(`PostData: ${postData}`);
+        const result = yield client.post(endpoint, postData);
+        if (result.message.statusCode !== 200) {
+            const response = yield result.readBody();
+            throw new Error(`StatusCode: ${result.message.statusCode}, Message: ${response}`);
+        }
+        return result;
+    });
+}
+exports.postMultipleServiceMetrics = postMultipleServiceMetrics;
 
 
 /***/ }),
@@ -135,12 +183,27 @@ function run() {
         try {
             const apiKey = core.getInput('api-key', { required: true });
             const serviceName = core.getInput('service-name', { required: true });
-            const metricName = core.getInput('metric-name', { required: true });
-            const metricValue = core.getInput('metric-value', { required: true });
+            const metricName = core.getInput('metric-name', { required: false });
+            const metricValue = core.getInput('metric-value', { required: false });
+            const metrics = core.getMultilineInput('metrics', {
+                required: false
+            });
+            if (!((metricName !== '' && metricValue !== '') || metrics.length !== 0)) {
+                throw new Error('Either metric-name and metric-value or metrics is required.');
+            }
             const currentTime = Math.floor(Date.now() / 1000);
             core.debug(`ServiceName: ${serviceName}, MetricName: ${metricName}, MetricValue: ${metricValue}, MetricTime: ${currentTime}`);
-            // Post values to Mackerel service metrics.
-            yield (0, mackerel_1.postServiceMetric)(apiKey, serviceName, metricName, parseInt(metricValue, 10), currentTime);
+            // Print each line of metrics.
+            for (const metric of metrics) {
+                core.debug(`Metric: ${metric}`);
+            }
+            // Post values to Mackerel service metrics. If metrics has more than 1 item, treat request as posting multiple metrics at once.
+            if (metrics.length > 0) {
+                yield (0, mackerel_1.postMultipleServiceMetrics)(apiKey, serviceName, metrics, currentTime);
+            }
+            else {
+                yield (0, mackerel_1.postServiceMetric)(apiKey, serviceName, metricName, parseInt(metricValue, 10), currentTime);
+            }
             core.setOutput('time', currentTime);
         }
         catch (error) {

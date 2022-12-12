@@ -15,7 +15,7 @@ jobs:
           npm install
       - run: |
           npm run all
-  test: # make sure the action works on a clean machine without building
+  test-run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -27,3 +27,36 @@ jobs:
           metric-name: 'post-mackerel-metrics.execution_test'
           metric-value: 123456.789
       - run: echo ${{ steps.post-to-mackerel.outputs.time }}
+  test-multiple-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - id: current-time
+        run: echo "epoch=$(date +%s)" >> $GITHUB_OUTPUT
+      - id: post-to-mackerel
+        uses: ./
+        with:
+          api-key: ${{ secrets.MACKEREL_APIKEY }}
+          service-name: ${{ secrets.MACKEREL_SERVICENAME }}
+          metrics: |
+            post-mackerel-metrics.multiple.test1 1111 ${{ steps.current-time.outputs.epoch }}
+            post-mackerel-metrics.multiple.test2 2222 ${{ steps.current-time.outputs.epoch }}
+      - run: echo ${{ steps.post-to-mackerel.outputs.time }}
+  test-input-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: set only metric-name
+        uses: ./
+        with:
+          api-key: ${{ secrets.MACKEREL_APIKEY }}
+          service-name: ${{ secrets.MACKEREL_SERVICENAME }}
+          metric-name: 'foo.bar'
+        continue-on-error: true
+      - name: set only metric-value
+        uses: ./
+        with:
+          api-key: ${{ secrets.MACKEREL_APIKEY }}
+          service-name: ${{ secrets.MACKEREL_SERVICENAME }}
+          metric-value: 1234
+        continue-on-error: true

@@ -9,11 +9,14 @@ inputs:
     required: true
     description: 'The Mackerel service name you want to post metrics to.'
   metric-name:
-    required: true
-    description: 'The Mackerel metric name you want to post. Accepted values are [a-zA-Z0-9._-]+ .'
+    required: false
+    description: 'The Mackerel metric name you want to post. Accepted values are [a-zA-Z0-9._-]+ . Either this or metrics is required.'
   metric-value:
-    required: true
-    description: 'The Mackerel metric value you want to post. Should be a numeric value.'
+    required: false
+    description: 'The Mackerel metric value you want to post. Should be a numeric value. Required when specifying metric-name.'
+  metrics:
+    required: false
+    description: 'A multiline input, used to specify multiple metrics at once. Formatted as `name value timestamp`. `timestamp` can be omitted, in which case the current time will be used.'
 outputs:
   time:
     description: 'The time used to post the metric (epoch seconds).'

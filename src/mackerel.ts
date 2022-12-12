@@ -36,6 +36,43 @@ export function constructServiceMetricData(
   return JSON.stringify(serviceMetricData)
 }
 
+// https://mackerel.io/api-docs/entry/service-metrics#post
+// use this for constructing the request body for multiple service metrics
+export function constructServiceMetricDataMultiple(
+  metrics: string[],
+  metricTime: number
+): string {
+  const serviceMetricData = []
+
+  for (const metric of metrics) {
+    // split each metric by space character.
+    // the metric will be defined as 'name value timestamp'
+    // e.g. foo-bar.metric 1234 1670741111
+    const splitted = metric.split(/\s+/)
+
+    // if string contains three values, use each of them as the metric.
+    // else if string only contains two values, treat it as name,value and use current time as metric time.
+    if (splitted.length === 3) {
+      serviceMetricData.push({
+        name: splitted.at(0),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        value: parseInt(splitted.at(1)!),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        time: parseInt(splitted.at(2)!)
+      })
+    } else if (splitted.length === 2) {
+      serviceMetricData.push({
+        name: splitted.at(0),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        value: parseInt(splitted.at(1)!),
+        time: metricTime
+      })
+    }
+  }
+
+  return JSON.stringify(serviceMetricData)
+}
+
 export async function postServiceMetric(
   apiKey: string,
   serviceName: string,
@@ -50,6 +87,29 @@ export async function postServiceMetric(
     metricValue,
     metricTime
   )
+
+  core.debug(`Endpoint: ${endpoint}`)
+  core.debug(`PostData: ${postData}`)
+
+  const result = await client.post(endpoint, postData)
+  if (result.message.statusCode !== 200) {
+    const response = await result.readBody()
+    throw new Error(
+      `StatusCode: ${result.message.statusCode}, Message: ${response}`
+    )
+  }
+  return result
+}
+
+export async function postMultipleServiceMetrics(
+  apiKey: string,
+  serviceName: string,
+  metrics: string[],
+  metricTime: number
+): Promise<http.HttpClientResponse> {
+  const client = prepareHttpClient(apiKey)
+  const endpoint = constructServiceMetricEndpoint(serviceName)
+  const postData = constructServiceMetricDataMultiple(metrics, metricTime)
 
   core.debug(`Endpoint: ${endpoint}`)
   core.debug(`PostData: ${postData}`)
