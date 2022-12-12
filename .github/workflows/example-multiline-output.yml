@@ -1,7 +1,9 @@
 name: Multiline output example
 
 on:
-  push
+  push:
+    branches:
+      - main
 
 jobs:
   count-and-post:
