@@ -1,0 +1,30 @@
+name: Count and Post lines of Code to Mackerel (Multiple metrics)
+
+on:
+  push
+
+jobs:
+  count-and-post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - id: count-lines-yml
+        name: count lines of Workflow code
+        run: |
+          lines=$(find .github/ -name '*.yml' -print0 | xargs -0 cat | wc -l | tr -d ' ')
+          echo "lines=${lines}" >> $GITHUB_OUTPUT
+      - id: count-lines-md
+        name: count lines of README
+        run: |
+          lines=$(find ./README.md -name '*.md' -print0 | xargs -0 cat | wc -l | tr -d ' ')
+          echo "lines=${lines}" >> $GITHUB_OUTPUT
+
+      - name: Post to Mackerel
+        uses: stefafafan/post-mackerel-metrics@v1
+        with:
+          api-key: ${{ secrets.MACKEREL_APIKEY }}
+          service-name: ${{ secrets.MACKEREL_SERVICENAME }}
+          metrics: |
+            lines.yaml ${{ steps.count-lines-yml.outputs.lines }}
+            lines.markdown ${{ steps.count-lines-md.outputs.lines }}
