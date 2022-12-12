@@ -32,15 +32,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: current-time
-        run: echo "time=$(date +%s)" >> GITHUB_OUTPUT
+        run: echo "epoch=$(date +%s)" >> $GITHUB_OUTPUT
       - id: post-to-mackerel
         uses: ./
         with:
           api-key: ${{ secrets.MACKEREL_APIKEY }}
           service-name: ${{ secrets.MACKEREL_SERVICENAME }}
           metrics: |
-            post-mackerel-metrics.multiple.test1 1111 ${{ steps.current-time.outputs.time }}
-            post-mackerel-metrics.multiple.test2 2222 ${{ steps.current-time.outputs.time }}
+            post-mackerel-metrics.multiple.test1 1111 ${{ steps.current-time.outputs.epoch }}
+            post-mackerel-metrics.multiple.test2 2222 ${{ steps.current-time.outputs.epoch }}
       - run: echo ${{ steps.post-to-mackerel.outputs.time }}
   test-input-validation:
     runs-on: ubuntu-latest
