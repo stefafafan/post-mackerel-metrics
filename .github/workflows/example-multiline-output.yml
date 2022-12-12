@@ -9,12 +9,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+      # https://github.com/orgs/community/discussions/26288#discussioncomment-3876281
       - id: multiline-output
         run: |
           delimiter="$(openssl rand -hex 8)"
           echo "metrics<<${delimiter}" >> $GITHUB_OUTPUT
-          echo "multiline.output1 12345" >> $GITHUB_OUTPUT
-          echo "multiline.output2 67890" >> $GITHUB_OUTPUT
+
+          # define two metrics and send to $GITHUB_OUTPUT for the next step.
+          echo "multiline.output1 12345 $(date +%s)" >> $GITHUB_OUTPUT
+          echo "multiline.output2 67890 $(date +%s)" >> $GITHUB_OUTPUT
+
           echo "${delimiter}" >> $GITHUB_OUTPUT
 
       # Post metrics sent from multiline output of previous step.
