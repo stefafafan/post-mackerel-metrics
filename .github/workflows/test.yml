@@ -15,7 +15,7 @@ jobs:
           npm install
       - run: |
           npm run all
-  test: # make sure the action works on a clean machine without building
+  test-run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -26,4 +26,17 @@ jobs:
           service-name: ${{ secrets.MACKEREL_SERVICENAME }}
           metric-name: 'post-mackerel-metrics.execution_test'
           metric-value: 123456.789
+      - run: echo ${{ steps.post-to-mackerel.outputs.time }}
+  test-multiple-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - id: post-to-mackerel
+        uses: ./
+        with:
+          api-key: ${{ secrets.MACKEREL_APIKEY }}
+          service-name: ${{ secrets.MACKEREL_SERVICENAME }}
+          metrics: |
+            post-mackerel-metrics.multiple.test1 1111
+            post-mackerel-metrics.multiple.test2 2222
       - run: echo ${{ steps.post-to-mackerel.outputs.time }}
