@@ -84,7 +84,8 @@ test('constructServiceMetricDataMultiple', () => {
     'foo.bar',
     'foo.baz 777',
     'hoge.fuga 999 1670747999',
-    'hoge.piyo\t1000\t1670741111'
+    'hoge.piyo\t1000\t1670741111',
+    'hoge.hoge    7777    1670742222'
   ]
   const data3 = [
     {
@@ -101,6 +102,11 @@ test('constructServiceMetricDataMultiple', () => {
       name: 'hoge.piyo',
       value: 1000,
       time: 1670741111
+    },
+    {
+      name: 'hoge.hoge',
+      value: 7777,
+      time: 1670742222
     }
   ]
 

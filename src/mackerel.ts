@@ -48,7 +48,7 @@ export function constructServiceMetricDataMultiple(
     // split each metric by space character.
     // the metric will be defined as 'name value timestamp'
     // e.g. foo-bar.metric 1234 1670741111
-    const splitted = metric.split(/\s/)
+    const splitted = metric.split(/\s+/)
 
     // if string contains three values, use each of them as the metric.
     // else if string only contains two values, treat it as name,value and use current time as metric time.
