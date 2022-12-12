@@ -57,7 +57,7 @@ with:
     my-favorite-metric.count2 7777.777
 ```
 
-Checkout a [working example workflow](https://github.com/stefafafan/post-mackerel-metrics/blob/main/.github/workflows/lines-of-code-example-workflow.yml).
+Checkout a [working example workflow](https://github.com/stefafafan/post-mackerel-metrics/blob/main/.github/workflows/example-lines-of-code-workflow.yml).
 
 ## Contributing
 
