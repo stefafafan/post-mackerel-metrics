@@ -20,11 +20,24 @@ jobs:
           lines=$(find ./README.md -name '*.md' -print0 | xargs -0 cat | wc -l | tr -d ' ')
           echo "lines=${lines}" >> $GITHUB_OUTPUT
 
+      # Post multiple metrics at once.
       - name: Post to Mackerel
         uses: stefafafan/post-mackerel-metrics@v1
         with:
           api-key: ${{ secrets.MACKEREL_APIKEY }}
           service-name: ${{ secrets.MACKEREL_SERVICENAME }}
           metrics: |
-            lines.yaml ${{ steps.count-lines-yml.outputs.lines }}
+            lines.yaml     ${{ steps.count-lines-yml.outputs.lines }}
             lines.markdown ${{ steps.count-lines-md.outputs.lines }}
+
+      # Post multiple metrics at once, specifying epoch time for each metric.
+      - id: current-time
+        run: echo "epoch=$(date +%s)" >> $GITHUB_OUTPUT
+      - name: Post to Mackerel (settings time explicity)
+        uses: stefafafan/post-mackerel-metrics@v1
+        with:
+          api-key: ${{ secrets.MACKEREL_APIKEY }}
+          service-name: ${{ secrets.MACKEREL_SERVICENAME }}
+          metrics: |
+            lines.yaml     ${{ steps.count-lines-yml.outputs.lines }} ${{ steps.current-time.outputs.epoch }}
+            lines.markdown ${{ steps.count-lines-md.outputs.lines }}  ${{ steps.current-time.outputs.epoch }}
