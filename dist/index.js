@@ -85,16 +85,16 @@ function constructServiceMetricDataMultiple(metrics, metricTime) {
             serviceMetricData.push({
                 name: splitted.at(0),
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                value: parseInt(splitted.at(1)),
+                value: parseInt(splitted.at(1), 10),
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                time: parseInt(splitted.at(2))
+                time: parseInt(splitted.at(2), 10)
             });
         }
         else if (splitted.length === 2) {
             serviceMetricData.push({
                 name: splitted.at(0),
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                value: parseInt(splitted.at(1)),
+                value: parseInt(splitted.at(1), 10),
                 time: metricTime
             });
         }
