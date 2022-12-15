@@ -56,7 +56,8 @@ function prepareHttpClient(apiKey) {
 exports.prepareHttpClient = prepareHttpClient;
 // https://mackerel.io/api-docs/entry/service-metrics#post
 function constructServiceMetricEndpoint(serviceName) {
-    return `${API_BASE_URL}/api/v0/services/${serviceName}/tsdb`;
+    const url = new URL(`/api/v0/services/${encodeURIComponent(serviceName)}/tsdb`, API_BASE_URL);
+    return url.toString();
 }
 exports.constructServiceMetricEndpoint = constructServiceMetricEndpoint;
 function constructServiceMetricData(metricName, metricValue, metricTime) {
