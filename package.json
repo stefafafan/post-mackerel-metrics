@@ -1,6 +1,6 @@
 {
   "name": "post-mackerel-metrics",
-  "version": "1.0.0",
+  "version": "1.1.2",
   "private": true,
   "description": "This is a simple action that posts service metrics to Mackerel (https://mackerel.io/).",
   "main": "lib/main.js",
