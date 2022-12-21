@@ -1,4 +1,4 @@
-<a href="https://github.com/actions/typescript-action/actions"><img alt="typescript-action status" src="https://github.com/actions/typescript-action/workflows/build-test/badge.svg"></a>
+<a href="https://github.com/stefafafan/post-mackerel-metrics/actions"><img alt="post-mackerel-metrics status" src="https://github.com/stefafafan/post-mackerel-metrics/workflows/build-test/badge.svg"></a>
 
 # post-mackerel-metrics
 
