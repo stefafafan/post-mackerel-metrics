@@ -2,6 +2,9 @@
 
 # post-mackerel-metrics
 
+> [!NOTE]
+> This repo is no longer maintained.
+
 post-mackerel-metrics is a simple GitHub Action for posting Service Metrics to [Mackerel](https://mackerel.io/).
 
 This action is inspired by the [yutailang0119/action-mackerel-api](https://github.com/yutailang0119/action-mackerel-api) action, but focuses only on posting service metrics as defined in https://mackerel.io/api-docs/entry/service-metrics#post.
